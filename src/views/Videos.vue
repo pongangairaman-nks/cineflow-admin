@@ -51,7 +51,7 @@ const headers: { text: string; value: keyof IVideo | "actions" }[] = [
   { text: "Title", value: "title" },
   { text: "Genre", value: "genre" },
   { text: "Likes", value: "likes" },
-  { text: "Actions", value: "actions", sortable: false },
+  { text: "Actions", value: "actions" },
 ];
 </script>
 
