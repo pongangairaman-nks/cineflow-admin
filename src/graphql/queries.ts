@@ -19,3 +19,27 @@ export const DELETE_VIDEO = gql`
     }
   }
 `;
+
+export const ADD_VIDEO = gql`
+  mutation ($input: VideoInput!) {
+    addVideo(input: $input) {
+      _id
+      title
+      genre
+      posterUrl
+      likes
+    }
+  }
+`;
+
+export const UPDATE_VIDEO = gql`
+  mutation ($id: ID!, $input: VideoInput!) {
+    updateVideo(id: $id, input: $input) {
+      _id
+      title
+      genre
+      posterUrl
+      likes
+    }
+  }
+`;

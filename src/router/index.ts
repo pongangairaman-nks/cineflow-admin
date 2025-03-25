@@ -1,11 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Videos from "@/views/Videos.vue";
+import VideoForm from "@/views/VideoForm.vue";
 
 const routes = [
   {
     path: "/",
     name: "Videos",
     component: Videos,
+  },
+  {
+    path: "/video/:id?", // Dynamic route, `id` is optional (for add/edit)
+    name: "VideoForm",
+    component: VideoForm,
+    props: true, // Pass route params as props
   },
 ];
 

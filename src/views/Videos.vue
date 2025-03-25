@@ -2,7 +2,19 @@
 <template>
   <v-container class="mt-8">
     <v-card>
-      <v-card-title class="text-h5">🎬 Video Library</v-card-title>
+      <v-card-title
+        :style="{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingTop: '32px',
+        }"
+      >
+        <span class="text-h5">🎬 Video Library</span>
+        <v-btn color="primary" @click="$router.push('/video')">
+          + Add Video
+        </v-btn>
+      </v-card-title>
 
       <v-data-table
         :headers="headers"
@@ -10,14 +22,22 @@
         :loading="loading"
         class="elevation-1"
         item-value="_id"
+        density="comfortable"
       >
-        <!-- 🔸 Custom poster thumbnail -->
+        <!-- Poster Column -->
         <template #item.posterUrl="{ item }">
           <v-img :src="item.posterUrl" width="80" height="100" cover />
         </template>
 
-        <!-- 🔸 Delete button -->
+        <!-- Actions Column -->
         <template #item.actions="{ item }">
+          <v-btn
+            color="blue"
+            @click="$router.push(`/video/${item._id}`)"
+            variant="text"
+          >
+            Edit
+          </v-btn>
           <v-btn color="red" @click="handleDelete(item._id)" variant="text">
             Delete
           </v-btn>
@@ -34,7 +54,6 @@
 <script setup lang="ts">
 import { useVideoStore } from "@/store/videos";
 import { storeToRefs } from "pinia";
-import type { IVideo } from "@/types";
 
 // 🎯 Access Pinia store and state
 const videoStore = useVideoStore();
@@ -46,12 +65,12 @@ const handleDelete = async (id: string) => {
 };
 
 // 📊 Vuetify table headers
-const headers: { text: string; value: keyof IVideo | "actions" }[] = [
-  { text: "Poster", value: "posterUrl" },
-  { text: "Title", value: "title" },
-  { text: "Genre", value: "genre" },
-  { text: "Likes", value: "likes" },
-  { text: "Actions", value: "actions" },
+const headers = [
+  { title: "Poster", key: "posterUrl" },
+  { title: "Title", key: "title" },
+  { title: "Genre", key: "genre" },
+  { title: "Likes", key: "likes" },
+  { title: "Actions", key: "actions" },
 ];
 </script>
 
