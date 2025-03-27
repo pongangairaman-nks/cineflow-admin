@@ -120,7 +120,7 @@ const handleSubmit = async () => {
 
     // Append files with specific field names
     if (videoFile.value) {
-      formData.append("video", videoFile.value);
+      formData.append("url", videoFile.value);
     }
 
     if (posterFile.value) {
@@ -146,6 +146,7 @@ const handleSubmit = async () => {
     });
     await videoStore.fetchVideos();
     console.log("upload video response", response);
+    alert("api call done");
     // Update store with the response
     // if (isEditMode.value) {
     //   await videoStore.updateVideo(response.data);

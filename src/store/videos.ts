@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import axios from "axios";
-import type { IVideo } from "../types/index";
+import type { IVideo } from "@/types";
 
 export const useVideoStore = defineStore("videoStore", () => {
   const videos = ref<IVideo[]>([]);
@@ -16,42 +16,32 @@ export const useVideoStore = defineStore("videoStore", () => {
         "http://localhost:5000/api/video/getAllVideos"
       );
 
-      // Properly destructure videos from the response
-      const { videos: fetchedVideos } = response.data;
-
-      // Assign the fetched videos to the store's videos ref
-      videos.value = fetchedVideos;
+      // Adjust based on your actual response structure
+      videos.value = response.data.videos || response.data;
 
       loading.value = false;
-      return fetchedVideos;
     } catch (err) {
-      error.value = err instanceof Error ? err.message : "An error occurred";
+      error.value =
+        err instanceof Error
+          ? err.message
+          : "An error occurred while fetching videos";
       loading.value = false;
-      return [];
     }
   };
-
-  // Rest of the store remains the same...
-
-  // Fetch videos on store initialization
-  fetchVideos();
-
-  console.log("videos is store", videos);
 
   // Delete a video
   const deleteVideo = async (videoId: string) => {
     try {
-      const response = await axios.delete(
-        `http://localhost:5000/api/video/${videoId}`
-      );
+      await axios.delete(`http://localhost:5000/api/video/${videoId}`);
 
       // Remove the video from local state
       videos.value = videos.value.filter((video) => video._id !== videoId);
-      await fetchVideos();
-      return response.data;
-    } catch (error) {
-      console.error("Error deleting video:", error);
-      throw error;
+
+      return true;
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : "Failed to delete video";
+      throw err;
     }
   };
 
@@ -92,13 +82,17 @@ export const useVideoStore = defineStore("videoStore", () => {
       if (index !== -1) {
         videos.value[index] = response.data.video;
       }
-      await fetchVideos();
+
       return response.data.video;
-    } catch (error) {
-      console.error("Error updating video:", error);
-      throw error;
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : "Failed to update video";
+      throw err;
     }
   };
+
+  // Initial fetch
+  fetchVideos();
 
   return {
     videos,
@@ -107,6 +101,5 @@ export const useVideoStore = defineStore("videoStore", () => {
     fetchVideos,
     deleteVideo,
     updateVideo,
-    // ... other methods
   };
 });
