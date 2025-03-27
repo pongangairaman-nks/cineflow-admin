@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar.vue";
 </script>
 <template>
   <v-app>
+    <!-- <router-view /> -->
     <v-layout class="flex h-screen">
       <v-navigation-drawer :width="240" permanent class="bg-[#1E1E2E]">
         <Sidebar />
