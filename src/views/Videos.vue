@@ -16,7 +16,6 @@
         item-value="_id"
         density="comfortable"
       >
-        <!-- Poster Column -->
         <template #item.posterUrl="{ item }">
           <v-img
             :src="item.poster"
@@ -27,7 +26,6 @@
           />
         </template>
 
-        <!-- Actions Column -->
         <template #item.actions="{ item }">
           <v-btn
             color="blue"
@@ -48,13 +46,11 @@
         </template>
       </v-data-table>
 
-      <!-- Error Handling -->
       <v-card-text v-if="error" class="text-red">
         Error: {{ error }}
       </v-card-text>
     </v-card>
 
-    <!-- Confirmation Dialog -->
     <v-dialog v-model="deleteDialog" max-width="500px">
       <v-card>
         <v-card-title class="text-h5">Confirm Delete</v-card-title>
@@ -83,24 +79,19 @@ import { useRouter } from "vue-router";
 import { useVideoStore } from "@/store/videos";
 import { storeToRefs } from "pinia";
 
-// 🎯 Access Pinia store and state
 const videoStore = useVideoStore();
-const { videos, loading, error, deleteVideo, updateVideo } =
-  storeToRefs(videoStore);
+const { videos, loading, error } = storeToRefs(videoStore);
 const router = useRouter();
 
-// 🗑️ Delete functionality
 const deleteDialog = ref(false);
 const videoToDelete = ref<string | null>(null);
 const deleting = ref(false);
 
-// Confirmation before delete
 const confirmDelete = (videoId: string) => {
   videoToDelete.value = videoId;
   deleteDialog.value = true;
 };
 
-// Execute delete after confirmation
 const executeDelete = async () => {
   if (!videoToDelete.value) return;
 
@@ -108,25 +99,17 @@ const executeDelete = async () => {
     deleting.value = true;
     await videoStore.deleteVideo(videoToDelete.value);
     deleteDialog.value = false;
-
-    // Optional: Show success toast/snackbar
-    // Vuetify snackbar example:
-    // const snackbar = useSnackbar();
-    // snackbar.success('Video deleted successfully');
   } catch (err) {
-    // Handle error (show error message)
     error.value = err instanceof Error ? err.message : "Failed to delete video";
   } finally {
     deleting.value = false;
   }
 };
 
-// Navigation to edit page
 const navigateToEdit = (videoId: string) => {
   router.push(`/video/${videoId}`);
 };
 
-// 📊 Vuetify table headers
 const headers = [
   { title: "Poster", key: "posterUrl", sortable: false },
   { title: "Title", key: "title" },
