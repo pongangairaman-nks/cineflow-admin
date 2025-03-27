@@ -22,6 +22,7 @@ export interface IVideo {
   type: string;
   genre: string;
   url: string;
+  poster: string;
   posterUrl: string;
   aiDescription?: string;
   likes: number;

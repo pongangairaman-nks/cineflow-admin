@@ -117,38 +117,35 @@ const handleSubmit = async () => {
     formData.append("title", video.value.title);
     formData.append("genre", video.value.genre);
     formData.append("type", video.value.type);
-    // formData.append("likes", video.value.likes.toString());
 
-    // Append files if they exist
+    // Append files with specific field names
     if (videoFile.value) {
-      formData.append("url", videoFile.value);
+      formData.append("video", videoFile.value);
     }
+
     if (posterFile.value) {
       formData.append("poster", posterFile.value);
     } else if (video.value.posterUrl) {
+      // If no poster file, but posterUrl is provided
       formData.append("posterUrl", video.value.posterUrl);
     }
 
-    // For edit mode, include the ID
-    if (isEditMode.value) {
-      formData.append("_id", video.value._id);
-    }
+    // Determine the appropriate API endpoint
+    const apiUrl = isEditMode.value
+      ? `http://localhost:5000/api/video/${route.params.id}`
+      : "http://localhost:5000/api/video/upload";
+
+    // Determine the appropriate HTTP method
+    const apiMethod = isEditMode.value ? "put" : "post";
 
     // Make API call
-    const response = await axios.post(
-      isEditMode.value
-        ? "http://localhost:5000/api/video/upload"
-        : "http://localhost:5000/api/video/upload",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
+    const response = await axios[apiMethod](apiUrl, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    await videoStore.fetchVideos();
     console.log("upload video response", response);
-    alert("api call done");
     // Update store with the response
     // if (isEditMode.value) {
     //   await videoStore.updateVideo(response.data);
