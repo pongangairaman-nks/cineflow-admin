@@ -69,8 +69,13 @@ const video = ref<IVideo>({
   _id: "",
   title: "",
   genre: "",
-  posterUrl: "",
+  type: "",
+  url: "",
+  poster: "",
   likes: 0,
+  likesBy: [],
+  comments: [],
+  aiDescription: undefined, // Optional field
 });
 
 const videoFile = ref<File | null>(null);

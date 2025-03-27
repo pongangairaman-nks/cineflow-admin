@@ -59,13 +59,21 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { Home, LogOut } from "lucide-vue-next";
+import type { Component } from "vue";
+
+// Define an interface for menu items
+interface MenuItem {
+  icon: Component;
+  label: string;
+  path: string;
+}
 
 const activeItem = ref("Home");
 const router = useRouter();
 
-const menuItems = [{ icon: Home, label: "Home", path: "/dashboard/home" }];
+const menuItems: MenuItem[] = [{ icon: Home, label: "Home", path: "/dashboard/home" }];
 
-const handleItemClick = (item) => {
+const handleItemClick = (item: MenuItem) => {
   activeItem.value = item.label;
   router.push(item.path);
 };

@@ -19,13 +19,12 @@ export interface Comment {
 export interface IVideo {
   _id: string;
   title: string;
-  type: string;
   genre: string;
+  type: string;
   url: string;
   poster: string;
-  posterUrl: string;
-  aiDescription?: string;
   likes: number;
-  likesBy: Like[];
-  comments: Comment[];
+  likesBy: Like[]; // Assuming these are user IDs
+  comments: Comment[]; // You might want to define a more specific type for comments
+  aiDescription?: string; // Optional field
 }
