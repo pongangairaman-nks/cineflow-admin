@@ -45,28 +45,89 @@ export const useVideoStore = defineStore("videoStore", () => {
     }
   };
 
-  // Update a video
-  const updateVideo = async (videoId: string, videoData: Partial<IVideo>) => {
+  // Initial fetch
+  fetchVideos();
+
+  const uploadVideo = async (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    video: any,
+    videoFile?: File,
+    posterFile?: File,
+    isEditMode?: boolean,
+    videoId?: string
+  ) => {
     try {
-      // Create FormData for file uploads
       const formData = new FormData();
 
-      // Append text fields
-      Object.keys(videoData).forEach((key) => {
-        const value = videoData[key as keyof IVideo];
-        if (value !== undefined && value !== null) {
-          // Handle file uploads separately
-          if (key === "videoFile" || key === "posterFile") {
-            formData.append(
-              key === "videoFile" ? "video" : "poster",
-              value as unknown as File
-            );
-          } else {
-            formData.append(key, value as string);
-          }
-        }
+      // Append regular fields
+      formData.append("title", video.title);
+      formData.append("genre", video.genre);
+      formData.append("type", video.type);
+
+      // Append files with specific field names
+      if (videoFile) {
+        formData.append("url", videoFile);
+      }
+
+      if (posterFile) {
+        formData.append("poster", posterFile);
+      } else if (video.posterUrl) {
+        formData.append("posterUrl", video.posterUrl);
+      }
+
+      // Determine the appropriate API endpoint
+      const apiUrl = isEditMode
+        ? `http://localhost:5000/api/video/${videoId}`
+        : "http://localhost:5000/api/video/upload";
+
+      // Determine the appropriate HTTP method
+      const apiMethod = isEditMode ? "put" : "post";
+
+      // Make API call
+      const response = await axios[apiMethod](apiUrl, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
+      // Fetch the updated list of videos
+      await fetchVideos();
+
+      return response.data;
+    } catch (err) {
+      error.value =
+        err instanceof Error ? err.message : "Error uploading video";
+      throw err;
+    }
+  };
+
+  const updateVideo = async (
+    videoId: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    video: any,
+    videoFile?: File,
+    posterFile?: File
+  ) => {
+    try {
+      const formData = new FormData();
+
+      // Append regular fields
+      formData.append("title", video.title);
+      formData.append("genre", video.genre);
+      formData.append("type", video.type);
+
+      // Append files if provided
+      if (videoFile) {
+        formData.append("video", videoFile);
+      }
+
+      if (posterFile) {
+        formData.append("poster", posterFile);
+      } else if (video.posterUrl) {
+        formData.append("posterUrl", video.posterUrl);
+      }
+
+      // Make API call
       const response = await axios.put(
         `http://localhost:5000/api/video/${videoId}`,
         formData,
@@ -77,22 +138,15 @@ export const useVideoStore = defineStore("videoStore", () => {
         }
       );
 
-      // Update the video in local state
-      const index = videos.value.findIndex((v) => v._id === videoId);
-      if (index !== -1) {
-        videos.value[index] = response.data.video;
-      }
+      // Fetch updated videos
+      await fetchVideos();
 
-      return response.data.video;
+      return response.data;
     } catch (err) {
-      error.value =
-        err instanceof Error ? err.message : "Failed to update video";
+      console.error("Error updating video:", err);
       throw err;
     }
   };
-
-  // Initial fetch
-  fetchVideos();
 
   return {
     videos,
@@ -101,5 +155,6 @@ export const useVideoStore = defineStore("videoStore", () => {
     fetchVideos,
     deleteVideo,
     updateVideo,
+    uploadVideo,
   };
 });

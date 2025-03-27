@@ -111,53 +111,26 @@ const handleSubmit = async () => {
   isSubmitting.value = true;
 
   try {
-    const formData = new FormData();
-
-    // Append regular fields
-    formData.append("title", video.value.title);
-    formData.append("genre", video.value.genre);
-    formData.append("type", video.value.type);
-
-    // Append files with specific field names
-    if (videoFile.value) {
-      formData.append("url", videoFile.value);
+    if (isEditMode.value && route.params.id) {
+      // Update existing video
+      await videoStore.updateVideo(
+        route.params.id as string,
+        video.value,
+        videoFile.value ?? undefined,
+        posterFile.value ?? undefined
+      );
+    } else {
+      // Upload new video
+      await videoStore.uploadVideo(
+        video.value,
+        videoFile.value ?? undefined,
+        posterFile.value ?? undefined
+      );
     }
-
-    if (posterFile.value) {
-      formData.append("poster", posterFile.value);
-    } else if (video.value.posterUrl) {
-      // If no poster file, but posterUrl is provided
-      formData.append("posterUrl", video.value.posterUrl);
-    }
-
-    // Determine the appropriate API endpoint
-    const apiUrl = isEditMode.value
-      ? `http://localhost:5000/api/video/${route.params.id}`
-      : "http://localhost:5000/api/video/upload";
-
-    // Determine the appropriate HTTP method
-    const apiMethod = isEditMode.value ? "put" : "post";
-
-    // Make API call
-    const response = await axios[apiMethod](apiUrl, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    await videoStore.fetchVideos();
-    console.log("upload video response", response);
-    alert("api call done");
-    // Update store with the response
-    // if (isEditMode.value) {
-    //   await videoStore.updateVideo(response.data);
-    // } else {
-    //   await videoStore.addVideo(response.data);
-    // }
 
     router.push("/");
   } catch (error) {
     console.error("Error submitting form:", error);
-    // Show error notification to user
     alert("Error submitting video. Please try again.");
   } finally {
     isSubmitting.value = false;
