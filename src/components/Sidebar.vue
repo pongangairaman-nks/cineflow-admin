@@ -21,13 +21,13 @@
         :class="[
           'mt-[12px] flex items-center w-full py-[16px] mb-2 transition-colors duration-200 cursor-pointer',
           activeItem === item.label
-            ? 'bg-[#6E44FF] text-white'
+            ? ' text-white'
             : 'text-gray-400 hover:bg-[#2C2C3E] hover:text-white',
         ]"
         :style="{
           display: 'flex',
           alignItems: 'center',
-          backgroundColor: '#6E44FF',
+          backgroundColor: activeItem === item.label ? '#6E44FF' : 'GrayText',
           padding: '8px',
         }"
       >
@@ -58,12 +58,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { Home, LogOut } from "lucide-vue-next";
+import { Home, LayoutDashboard, LogOut } from "lucide-vue-next";
 
 const activeItem = ref("Home");
 const router = useRouter();
 
-const menuItems = [{ icon: Home, label: "Home", path: "/dashboard/home" }];
+const menuItems = [
+  { icon: Home, label: "Home", path: "/videos" },
+  { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
+];
 
 const handleItemClick = (item) => {
   activeItem.value = item.label;

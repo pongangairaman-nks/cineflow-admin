@@ -5,48 +5,131 @@
         {{ isEditMode ? "Edit Video" : "Add Video" }}
       </v-card-title>
 
-      <v-form @submit.prevent="handleSubmit" enctype="multipart/form-data">
-        <v-text-field v-model="video.title" label="Title" required />
-        <v-text-field v-model="video.genre" label="Genre" required />
-        <v-text-field v-model="video.type" label="Type" required />
-        <v-file-input
-          v-model="videoFile"
-          label="Video File"
-          accept="video/*"
-          prepend-icon="mdi-video"
-          @change="handleFileChange"
-          :rules="[
-            (v) =>
-              !v || v.size < 10000000 || 'File size should be less than 10 MB',
-          ]"
+      <v-form
+        @submit.prevent="handleSubmit"
+        enctype="multipart/form-data"
+        class="custom-form"
+      >
+        <v-text-field
+          v-model="video.title"
+          label="Title"
+          required
+          variant="solo"
         />
-        <!-- <v-text-field v-model="video.posterUrl" label="Poster URL" /> -->
-        <v-file-input
-          v-model="posterFile"
-          label="Or Upload Poster Image"
-          accept="image/*"
-          prepend-icon="mdi-image"
+        <v-text-field
+          v-model="video.genre"
+          label="Genre"
+          required
+          variant="solo"
+          class="custom-text-field"
         />
-        <!-- <v-text-field v-model="video.likes" label="Likes" type="number" /> -->
-        <v-btn
-          class="mt-4"
-          @click="$router.push('/')"
+        <v-text-field
+          v-model="video.type"
+          label="Type"
+          required
+          variant="solo"
+          class="custom-text-field"
+        />
+        <p
           :style="{
-            marginRight: '8px',
-            backgroundColor: 'gray',
+            fontSize: '18px',
+            fontWeight: 'bold',
+            color: '#9b9b9b',
+            marginBottom: '10px',
           }"
         >
-          Cancel
-        </v-btn>
-        <v-btn
-          type="submit"
-          color="primary"
-          class="mt-4"
-          :loading="isSubmitting"
-          :disabled="isSubmitting"
+          Upload Video File
+        </p>
+        <v-file-input
+          v-model="videoFile"
+          accept="video/*"
+          @change="handleFileChange"
+          variant="plain"
+          prepend-icon="mdi-cloud-upload"
+          hide-details
+          :style="{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '2px dashed #6E44FF',
+            borderRadius: '8px',
+            padding: '20px',
+            textAlign: 'center',
+            transition: 'all 0.3s ease',
+            cursor: 'pointer',
+            minHeight: '120px' /* Makes it a box */,
+            color: '#6E44FF' /* Text color */,
+            fontSize: '16px',
+            fontWeight: 'bold',
+          }"
         >
-          {{ isEditMode ? "Update Video" : "Add Video" }}
-        </v-btn>
+          Click to upload or drag & drop a video file
+        </v-file-input>
+        <p
+          :style="{
+            fontSize: '18px',
+            fontWeight: 'bold',
+            color: '#9b9b9b',
+            marginTop: '16px',
+            marginBottom: '10px',
+          }"
+        >
+          Upload Video Thumbnail
+        </p>
+        <v-file-input
+          v-model="posterFile"
+          accept="image/*"
+          @change="handleFileChange"
+          variant="plain"
+          prepend-icon="mdi-cloud-upload"
+          hide-details
+          :style="{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            border: '2px dashed #6E44FF',
+            borderRadius: '8px',
+            padding: '20px',
+            textAlign: 'center',
+            transition: 'all 0.3s ease',
+            cursor: 'pointer',
+            minHeight: '120px' /* Makes it a box */,
+            color: '#6E44FF' /* Text color */,
+            fontSize: '16px',
+            fontWeight: 'bold',
+          }"
+        >
+          Click to upload or drag & drop a poster image
+        </v-file-input>
+        <div
+          class="button-container"
+          :style="{
+            marginTop: '24px',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'flex-end',
+          }"
+        >
+          <v-btn
+            @click="$router.push('/')"
+            class="cancel-btn"
+            :style="{
+              backgroundColor: 'gray',
+              color: 'white',
+              marginRight: '16px',
+            }"
+          >
+            Cancel
+          </v-btn>
+          <v-btn
+            type="submit"
+            :loading="isSubmitting"
+            :disabled="isSubmitting"
+            :style="{ backgroundColor: '#6E44FF', color: 'white' }"
+          >
+            {{ isEditMode ? "Update Video" : "Add Video" }}
+          </v-btn>
+        </div>
       </v-form>
     </v-card>
   </v-container>

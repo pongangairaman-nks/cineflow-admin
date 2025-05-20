@@ -1,11 +1,38 @@
 <template>
   <v-container class="mt-8">
-    <v-card>
-      <v-card-title class="d-flex justify-space-between align-center pa-6">
-        <span class="text-h5">🎬 Video Library</span>
-        <v-btn color="primary" @click="$router.push('/video')">
-          + Add Video
-        </v-btn>
+    <v-card
+      :style="{
+        background: 'transparent',
+        border: '1px solid gray',
+      }"
+    >
+      <v-card-title
+        class="d-flex justify-space-between align-center pa-6"
+        :style="{
+          borderBottom: '1px solid gray',
+        }"
+      >
+        <span class="text-h5">Manage Videos</span>
+        <div
+          @click="$router.push('/video')"
+          :style="{
+            backgroundColor: '#6E44FF',
+            color: 'white',
+            padding: '10px 16px',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            display: 'inline-block',
+            textAlign: 'center',
+            fontSize: '16px',
+            fontWeight: 'bold',
+            transition: 'background-color 0.3s ease',
+          }"
+          @mouseover="hover = true"
+          @mouseleave="hover = false"
+          :class="{ 'hover-style': hover }"
+        >
+          Add Video
+        </div>
       </v-card-title>
 
       <v-data-table
@@ -15,14 +42,22 @@
         class="elevation-1"
         item-value="_id"
         density="comfortable"
+        :style="{
+          padding: '8px',
+          background: 'transparent',
+        }"
       >
         <template #item.posterUrl="{ item }">
           <v-img
             :src="item.poster"
-            width="80"
+            width="100"
             height="100"
             cover
             :alt="item.title"
+            :style="{
+              margin: '16px',
+              borderRadius: '10%',
+            }"
           />
         </template>
 
@@ -31,17 +66,20 @@
             color="blue"
             @click="navigateToEdit(item._id)"
             variant="text"
-            size="small"
+            size="large"
           >
-            Edit
+            <v-icon>mdi-pencil</v-icon>
+            <!-- Edit Icon -->
           </v-btn>
+
           <v-btn
             color="red"
             @click="confirmDelete(item._id)"
             variant="text"
-            size="small"
+            size="large"
           >
-            Delete
+            <v-icon>mdi-delete</v-icon>
+            <!-- Delete Icon -->
           </v-btn>
         </template>
       </v-data-table>
